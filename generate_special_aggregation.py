@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2020.01.13
 # @Author  : lishun02@baidu.com
-# @FileName: generate_discovery.py
+# @FileName: generate_special_aggregation.py
 
 import json
 
