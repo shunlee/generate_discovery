@@ -25,13 +25,15 @@ g_resource_id_index = 3
 g_resource_is_vip_index = 5
 g_current_type = ''
 g_koudai_aggregation_id = 20000
+g_excel_filePath = ''
+g_sheet_name = ''
 
 parser = argparse.ArgumentParser(description="传入需要转成json的运营文件")
 parser.add_argument("-f", "--file", help="运营文件的路径")
+parser.add_argument("-s", "--sheet", help="excel的表单名")
 parser.add_argument("--version", action="store_true", help="查看版本号")
 
 args = parser.parse_args()
-filePath = ''
 
 if args.version:
     print "version：" + G_VERSION
@@ -42,7 +44,10 @@ if args.file:
         print "文件不存在，patch -->" + args.file
         exit(1)
     else:
-        filePath = args.file
+        g_excel_filePath = args.file
+if args.sheet:
+    g_sheet_name = args.sheet
+
 else:
     print "传入的文件路径为空！请使用-f或--file传入文件路径，例如：-f ./x.xlsx 或者--file ./x.xlsx"
     exit(1)
@@ -90,9 +95,12 @@ def mkdir(path):
         return False
 
 
-my_excel = xlrd.open_workbook(filePath)
-# my_sheet = my_excel.sheets()[0]
-my_sheet = my_excel.sheet_by_name("专辑页")
+my_excel = xlrd.open_workbook(g_excel_filePath)
+if g_sheet_name != '':
+    my_sheet = my_excel.sheet_by_name("专辑页")
+else:
+    my_sheet = my_excel.sheets()[0]
+
 max_row = my_sheet.nrows
 # max_clos = my_sheet.ncols
 max_clos = 7
