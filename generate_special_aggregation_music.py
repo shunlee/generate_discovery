@@ -148,17 +148,16 @@ for r in range(max_row):
         rosourceListItemData = RosourceListItemData()
         rosourceListItemData.resourceName = my_sheet.cell_value(r, G_RESOURCE_NAME_INDEX)
         rosourceListItemData.name = my_sheet.cell_value(r, G_RESOURCE_NAME_INDEX)
-        if my_sheet.cell_value(r, g_resource_is_vip_index) == '是':
-            rosourceListItemData.isVip = True
+        # if my_sheet.cell_value(r, g_resource_is_vip_index) == '是':
+        #     rosourceListItemData.isVip = True
         # 如果聚合专辑id是数字，认为是聚合，不然都是非集合
         try:
-            rosourceListItemData.aggregationId = g_qingting_aggregation_id + long(
+            rosourceListItemData.aggregationId = g_dushulang_aggregation_id + long(
                 my_sheet.cell_value(r, g_aggregation_id_index))
             rosourceListItemData.isAggregation = True
         except Exception:
-            print r
             rosourceListItemData.resourceUrl = 'dueros://audio_unicast_story/albumplay?album_id=' + str(
-                long(my_sheet.cell_value(r, g_resource_id_index)))
+                my_sheet.cell_value(r, g_resource_id_index))
         rosourceListItemData.imageUrl = 'https://iot-paas-static.cdn.bcebos.com/XTC/imgs/index/' + rosourceListItemData.resourceName + ".png"
         rootData.data[len(rootData.data) - 1].resourceList.append(rosourceListItemData)
         if g_current_type == G_RESOURCE_TYPE_EXCEL_CAROUSEL:

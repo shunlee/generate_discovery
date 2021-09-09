@@ -23,6 +23,7 @@ parser.add_argument("--version", action="store_true", help="查看版本号")
 
 args = parser.parse_args()
 filePath = ''
+G_OUTPUT_PATH_DIR = "./output/special/"
 
 if args.version:
     print "version：" + G_VERSION
@@ -68,7 +69,7 @@ class RootData:
 
 
 my_excel = xlrd.open_workbook(filePath)
-my_sheet = my_excel.sheets()[4]
+my_sheet = my_excel.sheets()[2]
 max_row = my_sheet.nrows
 max_clos = my_sheet.ncols
 data = []
@@ -76,19 +77,18 @@ rootData = RootData()
 
 line_one_data = my_sheet.col_values(0)
 
-print max_clos
-
 for c in range(max_clos):
     if str(my_sheet.cell_value(0, c)) == "专辑ID":
         g_resource_id_index = c
     elif str(my_sheet.cell_value(0, c)) == "名称":
         G_RESOURCE_NAME_INDEX = c
 for r in range(max_row):
+    print my_sheet.cell_value(r, 0)
     if len(my_sheet.cell_value(r, 0)) != 0:
         print "标题"
         rootData.data.append(resourceData())
         rootData.data[len(rootData.data) - 1].name = my_sheet.cell_value(r, G_RESOURCE_NAME_INDEX)
-        if str(my_sheet.cell_value(r, G_TYPE_NAME_INDEX)) == '双排':
+        if str(my_sheet.cell_value(r, G_TYPE_NAME_INDEX)) == '正方形':
             rootData.data[len(rootData.data) - 1].resourceType = 'resource_1_2'
         rootData.data[len(rootData.data) - 1].displayItemCount = -1
     elif len(my_sheet.cell_value(r, 1)) == 0:
@@ -97,11 +97,16 @@ for r in range(max_row):
         print "真实数据"
         rosourceListItemData = RosourceListItemData()
         rosourceListItemData.resourceName = my_sheet.cell_value(r, G_RESOURCE_NAME_INDEX)
-        if my_sheet.cell_value(r, g_resource_id_index) > 0:
+        if len(str(my_sheet.cell_value(r, g_resource_id_index))) > 17:
             rosourceListItemData.resourceUrl = 'dueros://audio_music/play?sheet=' + str(
+                my_sheet.cell_value(r, g_resource_id_index))
+        else:
+            rosourceListItemData.resourceUrl = 'dueros://audio_music/play?token=' + str(
                 my_sheet.cell_value(r, g_resource_id_index))
         rosourceListItemData.imageUrl = 'https://iot-paas-static.cdn.bcebos.com/XTC/imgs/index/' + rosourceListItemData.resourceName + ".png"
         rootData.data[len(rootData.data) - 1].resourceList.append(rosourceListItemData)
 
 json_str = json.dumps(rootData, default=lambda o: o.__dict__, sort_keys=False, indent=4).decode("unicode-escape")
 print json_str
+with open(G_OUTPUT_PATH_DIR + "music.json", "w") as fp:
+    fp.write(json_str)
